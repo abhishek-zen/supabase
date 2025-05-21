@@ -4,8 +4,7 @@ import { headers } from 'next/headers'
 import { checkEnvVars } from '@/utils/supabase/check-env-vars'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { createServerClient } from '@/utils/supabase/server'
-import { AuthButton } from '@/components/header-auth'
-import { EnvVarWarning } from '@/components/env-var-warning'
+import AuthButton  from '@/components/header-auth'
 import { ReactNode } from 'react'
 import Link from 'next/link'
 
@@ -17,11 +16,9 @@ export const metadata = {
 }
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const envVarsChecked = checkEnvVars()
   let userId: string | undefined
   let theme: string = 'system'
 
-  if (envVarsChecked) {
     try {
       const supabase = createServerClient()
       const { data: { user } } = await supabase.auth.getUser()
@@ -36,7 +33,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     } catch (e) {
       // Ignore
     }
-  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -47,7 +43,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         className={`${inter.className} bg-background-light dark:bg-background-dark transition-theme min-h-screen`}
         data-theme={theme}
       >
-        {!envVarsChecked && <EnvVarWarning />}
         <header className="flex items-center justify-between px-6 py-4 shadow bg-surface-light dark:bg-surface-dark sticky top-0 z-40">
           <div className="flex items-center gap-4">
             <Link href="/" className="font-bold text-xl tracking-tight text-primary-dark dark:text-primary-light">
